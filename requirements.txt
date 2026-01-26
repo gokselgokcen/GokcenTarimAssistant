@@ -1,0 +1,30 @@
+# --- Core Framework ---
+langchain>=0.2.0
+langchain-core>=0.2.0
+langchain-community>=0.2.0
+langgraph>=0.1.0
+pypdf
+pymupdf
+
+beautifulsoup4
+
+# --- LLM Integration (Gemini) ---
+langchain-google-genai>=1.0.3
+
+# --- Vector Database ---
+chromadb>=0.5.0
+langchain-chroma>=0.1.0
+
+# --- Tools & APIs ---
+# Tavily Arama Motoru için
+tavily-python>=0.3.3
+# Airtable bağlantısı için
+pyairtable>=2.3.3
+
+# --- Environment & Utils ---
+python-dotenv>=1.0.1
+pydantic>=2.7.0
+
+# --- Optional: API Server (Eğer FastAPI ile sunacaksan) ---
+fastapi>=0.110.0
+uvicorn>=0.29.0
