@@ -23,11 +23,11 @@ You are a grader assessing whether an LLM generation is grounded in / supported 
 \n'Yes' means that the answer is grounded in / supported by the set of facts.
 """
 
-hallucination_prompt =(
+hallucination_prompt =ChatPromptTemplate(
     [
         ("system", system_prompt),
         ("human", "Set of facts: \n\n {documents} \n\n LLM generation: {generation}"),
     ]
 )
 
-hallucination_grader: RunnableSequence = hallucination_prompt | structured_llm_grader
+hallucination_grader = hallucination_prompt | structured_llm_grader

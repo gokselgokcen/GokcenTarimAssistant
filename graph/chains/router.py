@@ -34,14 +34,17 @@ Use the following criteria to decide the datasource:
 1. **'airtable'**: Use this ONLY for:
    - Product prices found in the store .
    - Stock availability checks.
-   - Lead generation or contact requests (e.g., 'sizi arayalım', 'numaramı kaydedin').
+   - **Lead generation or contact requests** (e.g., 'call me', 'save my number', 'I want to register'). 
    *Note: If the user asks for a price of a generic commodity like 'stock market wheat price', use web_search.*
+   When routing to 'airtable':
+- If it's a price/stock query: Extract the exact product name (e.g., 'Üre', '15.15.15', 'AS') into 'product_name'.
+- If it's a lead/contact request: Extract 'name', 'surname', and 'phone' into the 'customer_info' dictionary.
 
 2. **'vectorstore'**: Use this for:
    - **Technical Agricultural Knowledge:** Planting charts, fertilizer usage manuals, agronomy advice, seed information .
    - **Company Info:** History, vision, mission, return policies, contact address.
    - Example: 'Domatese ne zaman gübre atılır?', 'Buğday ekim aralığı nedir?', 'Vizyonunuz ne?'.
-
+   
 3. **'web_search'**: Use this for **Live/Dynamic Data**:
    - Weather forecasts (e.g., 'İzmir hava durumu').
    - Current news, government announcements, or subsidies.
@@ -51,12 +54,13 @@ Use the following criteria to decide the datasource:
 4. **'direct_response'**: Use this for:
    - Casual conversation (e.g., 'Merhaba', 'Nasılsın').
    - Gratitude or simple closing remarks.
+   
+5. **CHAT HISTORY & CONTEXT:** 
+    - Any question referring to the user ("my name"), previous messages ("what did I say?"), or context.
 
 Output only the datasource name.
 
-When routing to 'airtable':
-- If it's a price/stock query: Extract the exact product name (e.g., 'Üre', '15.15.15', 'AS') into 'product_name'.
-- If it's a lead/contact request: Extract 'name', 'surname', and 'phone' into the 'customer_info' dictionary.
+
 
 Always prioritize 'airtable' for specific price/stock questions regarding Gökcen Tarım's products.
 """

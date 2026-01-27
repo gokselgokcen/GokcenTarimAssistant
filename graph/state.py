@@ -1,5 +1,6 @@
-from typing import List, TypedDict,Optional
+from typing import List, TypedDict, Optional, Annotated
 from langchain_core.messages import BaseMessage
+import operator
 
 class GraphState(TypedDict):
     """
@@ -16,7 +17,7 @@ class GraphState(TypedDict):
     """
     messages: List[BaseMessage]
     question: str
-    documents: List[str]
+    documents: Annotated[List[str], operator.add]
     generation: str
     web_search: bool
     route: str

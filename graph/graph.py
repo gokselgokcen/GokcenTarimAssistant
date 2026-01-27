@@ -1,8 +1,11 @@
 from langgraph.graph import StateGraph, END
+from langgraph.checkpoint.memory import MemorySaver
 
 from graph.nodes import generation_node
 from graph.state import GraphState
 from graph.node_constants import * # All constants imported
+from graph.chains.hallucination_grader import hallucination_grader
+from graph.chains.answer_grader import answer_grader
 
 
 
@@ -50,6 +53,30 @@ def decide_to_generate(state: GraphState):
         print("---DECISION TO GENERATE---")
         return GENERATE
 
+
+def grade_generation_grounded_in_documents_and_questions(state: GraphState):
+    print("----CHECK HALLUCINATION----")
+    question=state["question"]
+    documents= state["documents"]
+    generation= state["generation"]
+
+    score = hallucination_grader.invoke(
+        {"documents": documents, "generation": generation}
+    )
+
+    if hallucation_grader:= score.binary_score:
+        print("GENERATION IS GROUNDED IN DOCUMENTS")
+        score = answer_grader.invoke({"question":question,"generation":generation})
+        if answer_grade := score.binary_score:
+            print("GENERATION ADDRESSES QUESTION")
+            return "useful"
+        else:
+            print("GENERATION DOES NOT ADDRESSES QUESTION")
+            return "not useful"
+    else:
+        print("GENERATION IS NOT GROUNDED IN DOCUMENTS")
+        return "not supported"
+
 workflow=StateGraph(GraphState)
 
 workflow.add_node(RETRIEVE, retrieve_node)
@@ -79,12 +106,23 @@ workflow.add_conditional_edges(GRADE_DOCUMENTS, decide_to_generate,
                                    WEBSEARCH:WEBSEARCH,
                                    GENERATE:GENERATE,
                                })
+
+workflow.add_conditional_edges(
+    GENERATE,
+    grade_generation_grounded_in_documents_and_questions,
+    {
+        "useful": END,               # Her şey yolunda, cevabı ver.
+        "not supported": GENERATE,   # Uydurma varsa tekrar dene.
+        "not useful": WEBSEARCH,  # Cevap dökümanda var ama yetersizse Web'e git.
+    },
+)
 workflow.add_edge(WEBSEARCH,GENERATE)
 
 
 workflow.add_edge(AIRTABLE, GENERATE)
 workflow.add_edge(DIRECT_LLM, END)
-workflow.add_edge(GENERATE, END)
 
-app = workflow.compile()
+memory = MemorySaver()
+
+app = workflow.compile(checkpointer=memory)
 app.get_graph().draw_mermaid_png(output_file_path="graph.png")

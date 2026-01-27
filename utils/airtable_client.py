@@ -1,5 +1,6 @@
 import requests
 import os
+from datetime import datetime
 
 # Sabit Bilgiler
 AIRTABLE_BASE_ID = "appOYqZxm2uaHjCxF"
@@ -30,7 +31,9 @@ def get_product_price(product_name):
     return "Ürün bulunamadı."
 
 
-def create_lead(name, surname, phone, email=""):
+def create_lead(name, phone, email="",notes="",**kwargs):
+    surname = kwargs.get("surname", "")
+    full_name = f"{name} {surname}".strip() if surname else name
     # Sadece Customers tablosuna gider
     url = f"https://api.airtable.com/v0/{AIRTABLE_BASE_ID}/Customers"
 
@@ -38,19 +41,27 @@ def create_lead(name, surname, phone, email=""):
         "Authorization": f"Bearer {AIRTABLE_API_KEY}",
         "Content-Type": "application/json"
     }
+    today =datetime.now().strftime("%Y-%m-%d")
+
 
     data = {
         "records": [
             {
                 "fields": {
-                    "Name": name,
-                    "Surname": surname,
-                    "Phone": phone,
-                    "Email": email
+                    "Name": full_name,
+                    "Telefon": phone,
+                    "Email": email,
+                    "Date":  today,
+                    "Notes": notes
                 }
             }
         ]
     }
 
     response = requests.post(url, headers=headers, json=data)
-    return "Kayıt başarılı." if response.status_code == 200 else "Kayıt başarısız."
+    if response.status_code in [200,201]:
+        print("Customer saved...")
+        return "Customer saved..."
+    else:
+        print(f"err: {response.status_code}: {response.text}")
+        return f"NOT SAVED err: {response.status_code}: {response.text}"

@@ -8,8 +8,7 @@ def airtable_node(state: GraphState):
     question = state.get("question", "")
     message = state.get("messages", [])
 
-    # 1. State'den gelmiyorsa (None ise), Router'ı burada tekrar çalıştırıyoruz.
-    # Bu yöntem LangGraph'ta veri kaybını önlemenin en sağlam yoludur.
+
     source = question_router.invoke({"question": question})
     product_name = source.product_name
 
@@ -17,8 +16,7 @@ def airtable_node(state: GraphState):
 
     # 2. Ürün ismi bulunduysa sorgula
     if product_name:
-        # Airtable'da 'Üre' yazıyor ama Router 'Üre gübresi' diyebilir.
-        # Küçük bir temizlik:
+
         search_term = "Üre" if "üre" in product_name.lower() else product_name
 
         print(f"--- Searching {search_term} in table ---")
@@ -33,7 +31,7 @@ def airtable_node(state: GraphState):
     customer_info = source.customer_info
     if customer_info:
         print("-- Customer card is creating --")
-        results = create_lead(**customer_info)
+        results = create_lead(**source.customer_info)
         return {"tool_output": results, "messages": message}
 
     return {"tool_output": "Ürün veya müşteri bilgisi tespit edilemedi.", "messages": message}

@@ -24,7 +24,10 @@ pdf_urls = [
     "https://seedcogroup.com/wp-content/uploads/2022/11/Agronomy-Manual.pdf"
 ]
 
-CHROMA_PATH = "./chroma_db"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+CHROMA_PATH = os.path.join(BASE_DIR, "chroma_db_store")
 
 all_documents = []
 
@@ -78,17 +81,17 @@ def ingest_docs():
         documents=chunks,
         embedding=embedding,
         collection_name="rag-chroma",
-        persist_directory="./.chroma",
+        persist_directory=CHROMA_PATH,
 
     )
     print("Done!")
 
 retriever = Chroma(
     collection_name="rag-chroma",
-    persist_directory="../../.chroma",
+    persist_directory=CHROMA_PATH,
     embedding_function=GoogleGenerativeAIEmbeddings(model="gemini-embedding-001"), # Veya GoogleGenerativeAIEmbeddings()
 ).as_retriever()
-__all__ = ["retriever"]
+
 
 if __name__ == "__main__":
     ingest_docs()
