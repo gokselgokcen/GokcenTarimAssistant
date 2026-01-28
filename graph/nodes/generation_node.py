@@ -1,3 +1,4 @@
+from langchain_core.messages import AIMessage
 
 from graph.chains.generation import generation_chain
 from graph.state import GraphState
@@ -11,8 +12,10 @@ def generate(state: GraphState) -> Dict[str, Any]:
     tool_output = state.get("tool_output", "")
     messages = state.get("messages", [])
     chat_history_str = ""
+    print(f"DEBUG: Mevcut Mesaj Sayısı: {len(messages)}")
 
-    for m in messages[:-1]:
+
+    for m in messages:
         role = "User" if m.type == "human" else "Assistant"
         chat_history_str += f"{role}: {m.content}\n"
 
@@ -20,5 +23,7 @@ def generate(state: GraphState) -> Dict[str, Any]:
         {"context": document,"question":question,"tool_output":tool_output,"chat_history": chat_history_str}
     )
 
+    res_message = AIMessage(content=generation)
 
-    return {"generation":generation}
+
+    return {"generation":generation,"messages": [res_message]}

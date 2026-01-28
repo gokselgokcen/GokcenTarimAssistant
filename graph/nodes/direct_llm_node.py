@@ -31,10 +31,10 @@ def direct_llm_node(state: GraphState) -> Dict[str, Any]:
 
         Instructions:
         1. Respond politely and briefly.
-        2. If it's a greeting, greet them back warmly in Turkish.
+        2. If it's a greeting, greet them back warmly in User's Language.
         3. If they ask who you are, explain that you are the Gökcen Tarım AI Assistant.
         4. Do not provide technical agricultural advice here; just handle the conversation.
-        5. Always answer in Turkish.
+        5. Always answer in User's Language.
 
         Answer:"""
     )

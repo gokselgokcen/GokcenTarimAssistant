@@ -34,6 +34,9 @@ def route_question(state: GraphState):
     elif source.datasource.lower() == "direct_response":
         print("---Route LLM---")
         return DIRECT_LLM
+    elif source.datasource.lower() == "chat_history":
+        print("---Route Chat-History in Generate node---")
+        return GENERATE
     else:
         print("---RAG---")
         return RETRIEVE
@@ -95,6 +98,8 @@ workflow.add_node(DIRECT_LLM, direct_llm_node)
         DIRECT_LLM:DIRECT_LLM,
         WEBSEARCH:WEBSEARCH,
         RETRIEVE: RETRIEVE,
+        #chat_hist routing
+        GENERATE:GENERATE,
 
     }
 ))

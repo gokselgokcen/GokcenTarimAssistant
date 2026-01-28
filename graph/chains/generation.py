@@ -20,7 +20,7 @@ customer_extractor = llm.with_structured_output(CustomerInfo)
 template  = """You are the official AI assistant of 'Gökcen Tarım', a professional agricultural supply store.
 
     Use the provided information to answer the user's question. 
-    You have two sources of information:
+    You have three sources of information:
     1. Technical Documents (Context): {context}
     2. Real-time Price/Stock Data (Airtable): {tool_output}
     3. Chat History: {chat_history}
