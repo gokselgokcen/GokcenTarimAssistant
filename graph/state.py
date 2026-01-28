@@ -15,7 +15,7 @@ class GraphState(TypedDict):
         route: The decision made by the Router (e.g., 'vectorstore', 'web_search').
         tool_output: Raw data returned from external tools (Airtable, etc.).
     """
-    messages: List[BaseMessage]
+    messages: Annotated[List[BaseMessage], operator.add]
     question: str
     documents: Annotated[List[str], operator.add]
     generation: str

@@ -6,7 +6,7 @@ from sympy.physics.units import temperature
 from ingestion import retriever
 
 
-from graph.chains.router import system_prompt
+
 
 load_dotenv()
 
